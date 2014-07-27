@@ -39,7 +39,28 @@ YEAR-MONTH-DAY-title.MARKUP
 >处理内容能够使得某些字符变得更美观。例如，在Redcarpet里**smart**扩展是转换标准，ASCII引用字符变化为Unicode字符。为了合理地浏览来显示那些字符，定义字符集的值为**<meta charset="utf-8">**，在你的布局文件**<head>**中。
 
 ### 包含图片和资源
-在某一时刻，你将会想包含图片，下载文件，或则其他的数码资源在你的文本内容中，这些都是可以实现的。
+在某一时刻，你将会想包含图片，下载文件，或则其他的数码资源在你的文本内容中，这些都是可以实现的。当涉及到关联资源的语法在Markdown和Textile两者之间是不一样的，问题在于找出存放这些文件在你网站里的位置，这是一些每个人都会碰到的事儿。
 
+因为Jekyll的灵活性，关于如何来实现它是由很多解决方案。一个最通常的方案是在项目的根目录下创建一个文件夹，取名为**assets**或则**downloads**类似这样的，里面有图片，下载的内容或者其他放置的资源。然后，对于所有的博客，他们能够被关联，通过使用网站的root，其路径就是包含这些资源。这会再一次可依赖的方式，你网站的（子）域名和路径是可被设置的，但这里一些例子（用Markdown）是你如何能够用博客里的**site.url**变量来实现这个。
+
+在一篇博客里包含一个图片资源：
+{% highlight ruby %}
+… which is shown in the screenshot below:
+![My helpful screenshot]({{ site.url }}/assets/screenshot.jpg)
+{% endhighlight %}
+
+链接一个PDF让读者来下载：
+{% highlight ruby %}
+… you can [get the PDF]({{ site.url }}/assets/mydoc.pdf) directly.
+{% endhighlight %}
+
+>ProTip: Link using just site root URL
+>链接使用的是网站的根URL
+>
+>你能够跳过**{{site.url}}**变量，如果你知道你网站不会丹丹只显示域名的主路径。在这个例子里，你可以直接引用资源通过**/path/file.jpg**。
+
+### 显示博客的索引
+把拥有的博客放在一个文件夹里是比较好的，但一个博客没有使用除非你有一个关于博客的列表。在另外的页面上（或者在一个[template](http://jekyllrb.com/docs/templates/)）创建一个博客的索引是比较简单的，
+ 
 
 [writing posts](http://jekyllrb.com/docs/posts/)
