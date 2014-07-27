@@ -32,6 +32,14 @@ YEAR-MONTH-DAY-title.MARKUP
 >使用**post_url**标签来关联其他的博客，不需要担心URL的失联，在当网站的永久链接改变的时候。
 
 ### 文件内容格式
-所有博客文件必须以[YAML front-matter](http://jekyllrb.com/docs/frontmatter/)为开头。然后，
+所有博客文件必须以[YAML front-matter](http://jekyllrb.com/docs/frontmatter/)为开头。然后，就很简单地选择你所需要的格式。Jekyll提供了两种比较流行的标记格式：[Markdown](http://daringfireball.net/projects/markdown/)和[Textile](http://redcloth.org/textile)。每一个格式有他们自己的标记方式，属于各自不同的内容格式，因此你应该选择你自己熟悉的格式，决定哪一个格式更适合你的需求。
+
+>Be aware of character sets
+>
+>处理内容能够使得某些字符变得更美观。例如，在Redcarpet里**smart**扩展是转换标准，ASCII引用字符变化为Unicode字符。为了合理地浏览来显示那些字符，定义字符集的值为**<meta charset="utf-8">**，在你的布局文件**<head>**中。
+
+### 包含图片和资源
+在某一时刻，你将会想包含图片，下载文件，或则其他的数码资源在你的文本内容中，这些都是可以实现的。
+
 
 [writing posts](http://jekyllrb.com/docs/posts/)
