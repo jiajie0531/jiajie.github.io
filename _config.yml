@@ -3,7 +3,7 @@ title: JiaJie's site
 email: jiajie0531@gmail.com
 description: "Write an awesome description for your new site here. You can edit this line in _config.yml. It will appear in your document head meta (for Google search results) and in your feed.xml site description."
 baseurl: ""
-url: "http://yourdomain.com"
+url: "http://jiajie0531.github.io"
 twitter_username: jiajie0531
 github_username:  jiajie0531
 
@@ -15,7 +15,7 @@ permalink: pretty
 navigations:
   - title: Archive
     class: fa fa-list-ul
-    href: /archive.html
+    href: /archive
   - title: Tags
     class: fa fa-tags
     href: /tags.html
