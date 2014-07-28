@@ -15,7 +15,7 @@ permalink: pretty
 navigations:
   - title: Archive
     class: fa fa-list-ul
-    href: /archive
+    href: /archive/
   - title: Tags
     class: fa fa-tags
     href: /tags.html
