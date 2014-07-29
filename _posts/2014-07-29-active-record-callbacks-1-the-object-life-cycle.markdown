@@ -35,3 +35,36 @@ class User < ActiveRecord::Base
 end
 {% endhighlight %}
 
+宏的类方法也能够接收一个代码块。如果内嵌的代码是非常简短的，适合于单行代码的，可以考虑使用这个类型：
+
+{% highlight ruby %} 
+class User < ActiveRecord::Base
+  validates :login, :email, presence: true
+ 
+  before_create do
+    self.name = login.capitalize if name.blank?
+  end
+end
+{% endhighlight %}
+
+已注册的回调函数只能在生命周期中的某个事件上被激活：
+
+{% highlight ruby %} 
+class User < ActiveRecord::Base
+  before_validation :normalize_name, on: :create
+ 
+  # :on takes an array as well
+  after_validation :set_location, on: [ :create, :update ]
+ 
+  protected
+    def normalize_name
+      self.name = self.name.downcase.titleize
+    end
+ 
+    def set_location
+      self.location = LocationService.query(self)
+    end
+end
+{% endhighlight %}
+
+把回调函数声明为protected或者private，这是被认为很好的编码方式。如果声明为public，他们能够在模型之外被调用，违反了对象封装的原则。
