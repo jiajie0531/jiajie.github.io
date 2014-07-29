@@ -37,22 +37,7 @@ a, header #header h1 a, article .title a, article .meta .tags a, article .divide
   a:hover, header #header h1 a:hover, article .title a:hover, article .meta .tags a:hover, article .divider a:hover {
     color: #dd1144; }
 
-blockquote, pre code {
-  background-color: #f8f8f8;
-  padding: 0 1em;
-  border: 1px dashed #eee !important;
-  border-color: #e0e0e0 !important;
-  font-size: 13px;
-  line-height: 1.6;
-  display: block;
-  overflow: auto; }
-
-code {
-  background-color: #f8f8f8;
-  padding: 2px 5px;
-  border: 1px dashed #e0e0e0;
-  font-family: "Ubuntu", monospace; }
- 
+  
 
 time {
   font-family: "Ubuntu", monospace; }
