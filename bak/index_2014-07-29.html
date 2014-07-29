@@ -1,0 +1,38 @@
+---
+layout: default
+---
+
+<div class="home">
+
+  <h1>Posts</h1>
+
+  <ul class="posts">
+    {% for post in site.posts %}
+      <li>
+        <span class="post-date">{{ post.date | date: "%b %-d, %Y" }}</span>
+        <a class="post-link" href="{{ post.url | prepend: site.baseurl }}">{{ post.title }}</a>
+        {{ post.excerpt }}
+      </li>
+    {% endfor %}
+  </ul>
+
+  <p class="rss-subscribe">subscribe <a href="{{ "/feed.xml" | prepend: site.baseurl }}">via RSS</a></p>
+
+  <div class="divider"></div>
+  <ul class="listing main-listing">
+    <li class="listing-seperator">Happend earlier this year</i>
+  {% capture year %}{{ site.time | date:"%Y"}}{% endcapture %}
+  {% for post in site.posts offset:1 %}
+    {% capture y %}{{ post.date | date:"%Y"}}{% endcapture %}
+    {% if year != y %}
+    {% break %}
+    {% endif %}
+    <li class="listing-item">
+      <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
+      <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
+    </li>
+  {% endfor %}
+    <li class="listing-seperator"><a href="/archive/">Long long ago</a></li>
+  </ul>
+
+</div>

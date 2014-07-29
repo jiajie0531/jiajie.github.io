@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "Writing posts"
-date:   2014-07-25 21:14:29
+date:   2014-07-28 21:14:29
 categories: jekyll
 ---
  
