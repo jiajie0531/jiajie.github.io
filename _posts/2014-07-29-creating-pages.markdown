@@ -3,6 +3,7 @@ layout: post
 title:  "创建页面"
 date:   2014-07-28 22:32:27
 categories: jekyll
+tags: jekyll
 ---
 
 这是[writing posts](http://jekyllrb.com/docs/posts/)的加强版，你可能想要处理Jekyll网站的另外一个东西，那就是创建静态页面。Jekyll的简单之处就是只要拷贝文件和目录即可。
