@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "Active Record Callbacks 1 对象生命周期"
-date:   2014-07-29 16:02
+date:   2014-07-29 21:02
 categories: Rails
 tags: Rails Active Record Callbacks
 ---
