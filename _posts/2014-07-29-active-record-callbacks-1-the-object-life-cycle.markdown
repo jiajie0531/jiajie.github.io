@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "Active Record Callbacks 1 对象生命周期"
+title:  "Active Record Callbacks 1 对象生命周期 2 回调函数概要"
 date:   2014-07-29 21:02
 categories: Rails
 tags: Rails Active Record Callbacks
@@ -12,9 +12,9 @@ tags: Rails Active Record Callbacks
 
 回调是允许你出发逻辑部分的，在修改一个对象的状态之前或者之后。
 
-### 2 回调概要
+### 2 回调函数概要
 
-回调是方法，可以在一个对象生命周期的某一个时刻被调用。可以在回调函数中编写代码，无论一个Active Record对象在被创建，保存，更新，删除，验证，或者从数据库里导入时，都可以运行。
+回调函数是方法，可以在一个对象生命周期的某一个时刻被调用。可以在回调函数中编写代码，无论一个Active Record对象在被创建，保存，更新，删除，验证，或者从数据库里导入时，都可以运行。
 
 ## 2.1 回调函数的注册
 
