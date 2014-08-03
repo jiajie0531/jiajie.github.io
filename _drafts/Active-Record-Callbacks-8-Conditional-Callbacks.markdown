@@ -11,3 +11,21 @@ tags: Rails Active Record Callbacks
 ### 8.1 使用:if和:unless和标志
 
 你能够把:if和:unless属性和标志关联起来，这个标志对应的是一个断言方法的名称，这个方法在回调函数之前被调用。当使用:if选项时，如果断言方法返回false，回调函数将不会被执行；当使用:unless选项时，如果断言方法返回true，回调函数将不会被执行。
+
+{% highlight ruby %}
+class Order < ActiveRecord::Base
+  before_save :normalize_card_number, if: :paid_with_card?
+end
+{% endhighlight %}
+
+### 8.2 使用:if和:unless和一字符串
+
+你也可以使用一个字符串，将会被转换为运算式，因此需要包含可验证的代码。当字符串描述的真正地短条件时，你应该只使用这个选项：
+
+{% highlight ruby %}
+class Order < ActiveRecord::Base
+  before_save :normalize_card_number, if: "paid_with_card?"
+end
+{% endhighlight %}
+
+### 8.3 使用:if和:unless和一段代码
