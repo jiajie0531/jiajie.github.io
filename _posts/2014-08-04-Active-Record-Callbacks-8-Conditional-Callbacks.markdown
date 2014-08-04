@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "Active Record Callbacks 8 条件回调函数"
-date:   2014-07-31 23:05:55
+date:   2014-08-04 23:05:55
 categories: Rails
 tags: Rails Active Record Callbacks
 ---
@@ -29,3 +29,23 @@ end
 {% endhighlight %}
 
 ### 8.3 使用:if和:unless和一段代码
+
+最终，还是能够关联到:if和:unless后面跟着一段代码。当用来写简短的验证方法时，这个选项是最合适的，通常都是一行：
+
+{% highlight ruby %}
+class Order < ActiveRecord::Base
+  before_save :normalize_card_number,
+    if: Proc.new { |order| order.paid_with_card? }
+end
+{% endhighlight %}
+
+### 8.4 多个条件的回调函数
+
+当编写有条件的回调函数时，有可能在同一个回调函数声明中混合使用:if和:unless：
+{% highlight ruby %}
+class Comment < ActiveRecord::Base
+  after_create :send_email_to_author, if: :author_wants_emails?,
+    unless: Proc.new { |comment| comment.post.ignore_comments? }
+end
+{% endhighlight%}
+
