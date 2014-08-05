@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  "Active Record Associations 1 为什么用关联性？"
-date:   2014-08-05 16:51:55
+date:   2014-08-05 23:00:55
 categories: Rails
 tags: Rails Active Record Associations
 ---
@@ -43,3 +43,17 @@ class Order < ActiveRecord::Base
   belongs_to :customer
 end
 {% endhighlight %}
+
+随着这个改变，为特定的customer创建一个新的order是比较简单的：
+
+{% highlight ruby %}
+@order = @customer.orders.create(order_date: Time.now)
+{% endhighlight %}
+
+删除一个customer以及所属的orders也是比较简单的：
+
+{% highlight ruby %}
+@customer.destroy
+{% endhighlight %}
+
+为了了解关联性的不同的类型，读下去即可。下文会有一些使用关联性的窍门和技巧，通过在Rails里关于方法的一个完整引用和关联性的选项。
