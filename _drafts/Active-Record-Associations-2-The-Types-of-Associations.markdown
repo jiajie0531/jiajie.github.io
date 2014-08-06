@@ -31,4 +31,60 @@ end
 
 >note:
 >
->belongs_to关联必须使用单数的对象。
+>belongs_to关联必须使用单数的对象。如果在上面的例子里你使用了复数形式，对于在Order模型里关联了customer，你将会被告知，这里有一个“uninitialized constant Order::Customers”。这是因为Rails自动从关联的名称来推断类名。如果关联名称是错误地复数形式，那么推断出来的类也将是错误的复数形式。
+
+所对应的migration可能是这个样子：
+
+{% highlight ruby %}
+class CreateOrders < ActiveRecord::Migration
+  def change
+    create_table :customers do |t|
+      t.string :name
+      t.timestamps
+    end
+ 
+    create_table :orders do |t|
+      t.belongs_to :customer
+      t.datetime :order_date
+      t.timestamps
+    end
+  end
+end
+{% endhighlight %}
+
+### 2.2 has_one关联
+
+一个has_one关联同样是建立在与另一个模型的one-to-one联系，但有一些语义上面的不同(结论)。这个关联性隐含的是一个模型的每个实例包含或者处理另一个模型的实例。例如，如果在你应用程序里每一个supplier只有一个account，那么你将会是这个样子来声明supplier的：
+
+{% highlight ruby %}
+class Supplier < ActiveRecord::Base
+  has_one :account
+end
+{% endhighlight %}
+
+![has_one](/assets/2014/08/06/has_one.png)
+
+所对应的migration可能是这个样子：
+
+{% highlight ruby %}
+class CreateSuppliers < ActiveRecord::Migration
+  def change
+    create_table :suppliers do |t|
+      t.string :name
+      t.timestamps
+    end
+ 
+    create_table :accounts do |t|
+      t.belongs_to :supplier
+      t.string :account_number
+      t.timestamps
+    end
+  end
+end
+{% endhighlight %}
+
+### 2.3 has_many关联
+
+一个has_many关联指的是与另一个模型one-to-many的关系。你将会发现这个关联是belongs_to关联的"other side"。这个关联指的是模型的每一个实例
+
+
