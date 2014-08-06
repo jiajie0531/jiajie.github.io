@@ -9,7 +9,7 @@ github_username:  jiajie0531
 
 # Build settings
 markdown: kramdown
-permalink: pretty
+permalink: /:year/:month/:day/:title.html
 
 #navigations
 navigations:
