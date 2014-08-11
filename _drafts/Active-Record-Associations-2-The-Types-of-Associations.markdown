@@ -249,3 +249,49 @@ class CreateAccountHistories < ActiveRecord::Migration
 end
 {% endhighlight %}
 
+### 2.6 has_and_belongs_to_many 关联
+
+一个has_and_belongs_to_many 关联创建了一个与另一个model的直接many_to_many关系，没有中间串联的model。例如，如果你的应用系统包括assemlies和parts，每一个assembly拥有多个parts，每一个part含有多个assemblies，你可以这样来声明这些models：
+
+{% highlight ruby %}
+class Assembly < ActiveRecord::Base
+  has_and_belongs_to_many :parts
+end
+ 
+class Part < ActiveRecord::Base
+  has_and_belongs_to_many :assemblies
+end
+{% endhighlight %}
+
+![habtm](/assets/2014/08/06/habtm.png)
+
+所对应的migration可能是这个样子：
+
+{% highlight ruby %}
+class CreateAssembliesAndParts < ActiveRecord::Migration
+  def change
+    create_table :assemblies do |t|
+      t.string :name
+      t.timestamps
+    end
+ 
+    create_table :parts do |t|
+      t.string :part_number
+      t.timestamps
+    end
+ 
+    create_table :assemblies_parts, id: false do |t|
+      t.belongs_to :assembly
+      t.belongs_to :part
+    end
+  end
+end
+{% endhighlight %}
+
+### 2.7 选择belongs_to和has_one
+
+如果你想要在两个model之间建立one-to-one的关系，你将需要给其中一个增加belongs_to，给另外一个增加has_one。你如何来知道哪个是哪个呢？
+
+区别在于你所设置的外键（），
+
+
