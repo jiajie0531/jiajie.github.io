@@ -15,16 +15,16 @@ permalink: /:year/:month/:day/:title.html
 navigations:
   - title: Archive
     class: fa fa-list-ul
-    href: /archive/
+    href: /archive.html
   - title: Tags
     class: fa fa-tags
-    href: /tags/
+    href: /tags.html
   - title: About
     class: fa fa-user
-    href: /about/ 
+    href: /about.html
   - title: Blogroll
     class: fa fa-link
-    href: /links/
+    href: /links.html
   - title: Subscribe
     class: fa fa-rss
     href: /atom.xml
