@@ -1,12 +1,12 @@
 ---
 layout: post
 title:  "Active Record Associations 2 关联性的类型"
-date:   2014-08-05 23:12:55
+date:   2014-08-06 17:12:55
 categories: Rails
 tags: Rails Active Record Associations
 ---
 
-在Rails里，关联性是两个Active Record模型之间的一个连接。关联性是使用微类型调用来实现的，因此你可以直接在你的模型中增加属性。例如，通过声明一个模型belongs_to另一个，你可以通过Rails来维护两个模型实例之间的主键-外键信息，你也会得到一些实用方法，已被增加到你的模型中。Rails提供了六种类型的关联：
+在Rails里，关联性是两个Active Record模型之间的一个连接。关联性是使用微类型(macro-style)调用来实现的，因此你可以直接在你的模型中增加属性。例如，通过声明belongs_to来关联两个models，你可以通过Rails来维护两个模型实例之间的主键-外键信息，你也会得到一些实用方法，已被增加到你的模型中。Rails提供了六种类型的关联：
 
 * belongs_to
 * has_one
@@ -419,4 +419,28 @@ end
 
 ### 2.10 Self Joins
 
+设计一个数据模型，有时候你将会找到一个model，它只对于他本身有一个关联。例如，你可能想要保存所有雇员信息到一单个的数据库模型里，但是能够被跟踪其联系，就类似于manager和subordinates。这种情况能够用self-joining关联性来被模型化：
 
+{% highlight ruby %}
+class Employee < ActiveRecord::Base
+  has_many :subordinates, class_name: "Employee",
+                          foreign_key: "manager_id"
+ 
+  belongs_to :manager, class_name: "Employee"
+end
+{% endhighlight %}
+
+搞定这个步骤，你可以取得@employee.subordinates和@employee.manager。
+
+在你的migration/schema，你将会在其model本身里增加一个references数据列。
+
+{% highlight ruby %}
+class CreateEmployees < ActiveRecord::Migration
+  def change
+    create_table :employees do |t|
+      t.references :manager
+      t.timestamps
+    end
+  end
+end
+{% endhighlight %}
