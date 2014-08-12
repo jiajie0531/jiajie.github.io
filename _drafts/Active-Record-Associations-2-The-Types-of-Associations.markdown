@@ -292,6 +292,131 @@ end
 
 如果你想要在两个model之间建立one-to-one的关系，你将需要给其中一个增加belongs_to，给另外一个增加has_one。你如何来知道哪个是哪个呢？
 
-区别在于你所设置的外键（），
+区别在于你所设置的外键（它是作用于数据表上，为class声明belongs_to关联性），但你也应该对于一些实际的数据有一些想法。has_one关系意思是一些东西中的某一个是属于你的----也就是说，那些东西还是会指向到你。例如，一个supplier拥有一个account，一个account属于一个supplier。建议比较正确的关联性声明方式如下：
+
+{% highlight ruby %}
+class Supplier < ActiveRecord::Base
+  has_one :account
+end
+ 
+class Account < ActiveRecord::Base
+  belongs_to :supplier
+end
+{% endhighlight %}
+
+所对应的migration可能是这个样子：
+
+{% highlight ruby %}
+class CreateSuppliers < ActiveRecord::Migration
+  def change
+    create_table :suppliers do |t|
+      t.string  :name
+      t.timestamps
+    end
+ 
+    create_table :accounts do |t|
+      t.integer :supplier_id
+      t.string  :account_number
+      t.timestamps
+    end
+  end
+end
+{% endhighlight %}
+
+> note:
+>
+> 使用t.integer :supplier_id使得外键命名直白又明确。在当前的Rails版本中，你可以抽象提炼这个实现细节，通过使用t.references :supplier来代替。
+
+### 2.8 选择has_many :through和has_and_belongs_to_many
+
+Rails提供了两种不同的方式来声明models之间的一个many-to-many关系。比较简单的方式是使用has_and_belongs_to_many，这个能允许你直接搞定这个关联：
+
+{% highlight ruby %}
+class Assembly < ActiveRecord::Base
+  has_and_belongs_to_many :parts
+end
+ 
+class Part < ActiveRecord::Base
+  has_and_belongs_to_many :assemblies
+end
+{% endhighlight %}
+
+第二个方式来声明一个many-to-many关系是使用has_many :through。这使得关联性变得间接，通过一个关联model来实现：
+
+{% highlight ruby %}
+class Assembly < ActiveRecord::Base
+  has_many :manifests
+  has_many :parts, through: :manifests
+end
+ 
+class Manifest < ActiveRecord::Base
+  belongs_to :assembly
+  belongs_to :part
+end
+ 
+class Part < ActiveRecord::Base
+  has_many :manifests
+  has_many :assemblies, through: :manifests
+end
+{% endhighlight %}
+
+如果你需要与关联的model产生联系作为一个独立的entity，最简单的规则就是你应该建立一个has_many :through关系。如果你不需要与所关联的model产生联系，比较简单的做法就是建立一个has_and_belongs_to_many关系（虽然你将需要去记得要在数据库里创建关联的数据表）。
+
+如果你需要对于所join model做校验，回调，或者额外的属性，你应该使用has_many :through。
+
+### 2.9 多态关联性
+
+稍微再进一步探寻关联性，会是*多态*关联。有了多态关联性，在单一的关联上，一个model可以属于多个其他的model。例如，你可能有一个picture的model，其属于一个employee的model或者一个product的model。这里就是怎样来声明：
+
+{% highlight ruby %}
+class Picture < ActiveRecord::Base
+  belongs_to :imageable, polymorphic: true
+end
+ 
+class Employee < ActiveRecord::Base
+  has_many :pictures, as: :imageable
+end
+ 
+class Product < ActiveRecord::Base
+  has_many :pictures, as: :imageable
+end
+{% endhighlight %}
+
+你可以考虑吧一个多态belongs_to声明作为建立一个接口，可以让其他的model来使用。从一个Employee model的实例中，你可以获取一个pictures的集合：@employee.pictures。
+
+相似地，你可以获取@product.pictures。
+
+如果你有一个Picture model的实例，你可以得到他的父类通过@picture.imageable。为了执行这个，你需要在model里声明一个外键和一个类型的数据列，来声明多态的接口：
+
+{% highlight ruby %}
+class CreatePictures < ActiveRecord::Migration
+  def change
+    create_table :pictures do |t|
+      t.string  :name
+      t.integer :imageable_id
+      t.string  :imageable_type
+      t.timestamps
+    end
+  end
+end
+{% endhighlight %}
+
+这个migration可以通过使用t.references来简化：
+
+{% highlight ruby %}
+class CreatePictures < ActiveRecord::Migration
+  def change
+    create_table :pictures do |t|
+      t.string :name
+      t.references :imageable, polymorphic: true
+      t.timestamps
+    end
+  end
+end
+{% endhighlight %}
+
+![polymorphic](/assets/2014/08/06/polymorphic.png)
+
+### 2.10 Self Joins
 
 
