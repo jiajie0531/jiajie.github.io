@@ -6,6 +6,7 @@ categories: Rails
 tags: Rails Active Record Associations
 ---
 
+![P1000759](/assets/2014/08/12/P1000759.gif)
 
 ![belongs_to](/assets/2014/08/06/belongs_to.png)
 
