@@ -176,3 +176,4 @@ end
 
 #### 4.1.2.5 :foreign_key
 
+基于约定，Rails假设在这个model
