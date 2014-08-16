@@ -330,3 +330,57 @@ end
 
 ## 4.2 has_one关联
 
+has_one关联创建了一个one-to-one匹配另一个model。在数据库里，这个关联意味着其他类包含其外键。如果这个类包含了外键，那么你应该使用belongs_to来替代。
+
+### 4.2.1 has_one所新增的方法
+
+当你声明一个has_one关联时，对于这个关联声明的类自动获取五个相关的方法：
+
+* association(force_reload = false)
+* association=(associate)
+* build_association(attributes = {})
+* create_association(attributes = {})
+* create_association!(attributes = {})
+
+在所有的这些方法里，has_one关联后面跟着symbol作为第一个参数。例如，可以这样声明：
+
+{% highlight ruby %}
+class Supplier < ActiveRecord::Base
+  has_one :account
+end
+{% endhighlight %}
+
+每一个Supplier model的实例将会有这些方法：
+
+{% highlight ruby %}
+account
+account=
+build_account
+create_account
+create_account!
+{% endhighlight %}
+
+>note
+>
+>当初始化一个新的has_one或者belongs_to关联时，你必须使用build_前缀构建这个关联，而不是association.build方法，association.build是被用在has_many或者has_and_belongs_to_many关联上。为了创建一个，可以使用create_prefix。
+
+#### 4.2.1.1 association(force_reload = false)
+
+如果一般情况下，association方法返回一个已关联的对象。如果没有发现关联的对象，返回nil。
+
+{% highlight ruby %}
+@account = @supplier.account
+{% endhighlight %}
+
+如果已关联对象已经从数据库里获取，其缓存的版本会被返回。为了重写这个行为（针对数据库的读取），代入true作为force_reload参数的值。
+
+#### 4.2.1.2 association=(associate)
+
+association=方法是给这个对象赋值一个关联对象。在本质上，这意味着从这个对象里抓取主键，设置关联对象的外键为相同的值。
+
+{% highlight ruby %}
+@supplier.account = @account
+{% endhighlight %}
+
+#### 4.2.1.3 build_association(attributes = {})
+
