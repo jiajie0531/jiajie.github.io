@@ -384,3 +384,26 @@ association=方法是给这个对象赋值一个关联对象。在本质上，�
 
 #### 4.2.1.3 build_association(attributes = {})
 
+build_association方法返回一个新关联类型的对象。这个对象将会从传入的属性里被初始化，设置联系是通过它的外键，但是已关联的对象将不会被保存。
+
+{% highlight ruby %}
+@account = @supplier.build_account(terms: "Net 30")
+{% endhighlight %}
+
+#### 4.2.1.4 create_association(attributes = {})
+
+create_association方法返回一个新关联类型的对象。这个对象将会从传入的属性里被初始化，设置联系是通过它的外键，一旦它传入所有的针对关联model的指定校验，已关联对象将会被保存。
+
+{% highlight ruby %}
+@account = @supplier.create_account(terms: "Net 30")
+{% endhighlight %}
+
+#### create_association!(attributes = {})
+
+和上面的create_association是一样的，但如果数据记录无效的话，会抛出ActiveRecord::RecordInvalid。
+
+### 4.2.2 has_one的选项
+
+
+
+
