@@ -404,6 +404,59 @@ create_association方法返回一个新关联类型的对象。这个对象将�
 
 ### 4.2.2 has_one的选项
 
+当Rails使用智能化的默认值，在大部分情况下将可以很好地执行，可能有些时候，当你想要定制化has_one关联的行为需要用到选项。类似于这样的定制化可以简单地通过传入选项来完成，在你创建关联的时候。例如，这个关联用到两个这样的选项：
+
+{% highlight ruby %}
+class Supplier < ActiveRecord::Base
+  has_one :account, class_name: "Billing", dependent: :nullify
+end
+{% endhighlight %}
+
+has_one关联提供这些选项：
+
+* :as
+* :autosave
+* :class_name
+* :dependent
+* :foreign_key
+* :inverse_of
+* :primary_key
+* :source
+* :source_type
+* :through
+* :validate
+
+#### 4.2.2.1 :as
+
+设置:as选项表明这是一个多态关联。关于多态关联的细节在于[earlier in this guide](http://guides.rubyonrails.org/association_basics.html#polymorphic-associations)。
+
+#### 4.2.2.2 :autosave
+
+如果你把:autosave选项设置为true，只要在你保存父类对象时，Rails将会保存任何载入的事物和销毁已被标记为可删除的事物。
+
+#### 4.2.2.3 :class_name
+
+如果其他model的名字不能够从关联名称推导出来的话，你可以使用:class_name选项来支持model名字。例如，如果一个supplier有一个account，但包含accounts的model其实际名字是Billing，你将会这样来建立：
+
+{% highlight ruby %}
+class Supplier < ActiveRecord::Base
+  has_one :account, class_name: "Billing"
+end
+{% endhighlight %}
+
+#### 4.2.2.4 :dependent
+
+当关联对象被销毁时，可以控制它所发生的情况是什么：
+
+* :destroy引起已关联对象被销毁
+* :delete引起已关联对象被直接从数据库里删除（因此回调函数将不会执行）
+* :nullify引起外键被设置为NULL。回调函数不会被执行。
+* :restrict_with_exception如果有一个已关联的记录的话，会引起一个异常被抛出
+* :restrict_with_error如果有一个已关联对象，会引起一个错误被增加到owner
+
+为了那些数据库的限制条件为NOT NULL的关联性不需要去设置或者委托:nullify选项。如果你不去设置依赖来销毁这样的关联性，你将不能够来改变其关联的对象，因为初始化的关联对象外键将被设置为不允许的NULL值。
+
+#### 4.2.2.5 :foreign_key
 
 
 
