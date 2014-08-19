@@ -458,5 +458,143 @@ end
 
 #### 4.2.2.5 :foreign_key
 
+按照约定，Rails假设有一个列被用来作为外键关联到其他的model，这个列名是会增加后缀_id。:foreign_key选项让你能直接设置外键名称：
 
+{% highlight ruby %}
+class Supplier < ActiveRecord::Base
+  has_one :account, foreign_key: "supp_id"
+end
+{% endhighlight %}
 
+>information
+>
+>在任何情况下，Rails不会为你创建外键的列。你需要显示地在你的数据迁移文件里(migration)定义它们
+
+#### 4.2.2.6 :inverse_of
+
+:inverse_of选项指定的是belongs_to关联的名字，它是这个关联的反响。不要结合:through或者:as选项一起使用。
+
+{% highlight ruby %}
+class Supplier < ActiveRecord::Base
+  has_one :account, inverse_of: :supplier
+end
+ 
+class Account < ActiveRecord::Base
+  belongs_to :supplier, inverse_of: :account
+end
+{% endhighlight %}
+
+#### 4.2.2.7 :primary_key
+
+按照约定，Rails假设一个列被用来作为model的主键是id。你可以重写它，显示地声明主键，用:primary_key选项。
+
+#### 4.2.2.8 :source
+
+:source选项指定的是source关联名通过一个has_one :through关联。
+
+#### 4.2.2.9 :source_type
+
+:source_type选项指的是source关联类型一个has_one :through关联，用来处理一个多态的关联。
+
+#### 4.2.2.10 :through
+
+:through选项指的是一个join model通过哪个model来执行查询。has_one :through关联细节已经在前面讲过[earlier in this guide](http://guides.rubyonrails.org/association_basics.html#the-has-one-through-association)。
+
+#### 4.2.2.11 :validate
+
+如果你设置:validate选项值为true，那么被关联的对象无论你何时保存它都将会被验证。默认的情况下，这个选项的值是false，当这个对象被保存的时候将不会校验。
+
+### 4.2.3 has_one的范围
+
+当你想要用has_one定制化查询时，可能需要一些时间。类似于这样的定制化能够通过一个代码块来获取。例如：
+
+{% highlight ruby %}
+class Supplier < ActiveRecord::Base
+  has_one :account, -> { where active: true }
+end
+{% endhighlight %}
+
+你可以在代码块里使用标准的[查询方法](http://guides.rubyonrails.org/active_record_querying.html)。接下来下面这些将会被讨论：
+
+* where
+* includes
+* readonly
+* select
+
+#### 4.2.3.1 where
+
+where方法让你指定条件，来满足关联的对象。
+
+{% highlight ruby %}
+class Supplier < ActiveRecord::Base
+  has_one :account, -> { where "confirmed = 1" }
+end
+{% endhighlight %}
+
+#### 4.2.3.2 includes
+
+你可以使用includes方法来指定second-order关联，当这个关联被使用时，它会被及时导入。例如，考虑这些models：
+
+{% highlight ruby %}
+class Supplier < ActiveRecord::Base
+  has_one :account
+end
+ 
+class Account < ActiveRecord::Base
+  belongs_to :supplier
+  belongs_to :representative
+end
+ 
+class Representative < ActiveRecord::Base
+  has_many :accounts
+end
+{% endhighlight %}
+
+如果你经常性地从suppliers直接获取representatives(@supplier.account.representative)，那么你可以使你的代码变得更有效率，通过在关联中从suupliers到accounts里来包括representatives：
+
+{% highlight ruby %}
+class Supplier < ActiveRecord::Base
+  has_one :account, -> { includes :representative }
+end
+ 
+class Account < ActiveRecord::Base
+  belongs_to :supplier
+  belongs_to :representative
+end
+ 
+class Representative < ActiveRecord::Base
+  has_many :accounts
+end
+{% endhighlight %}
+
+#### 4.2.3.3 readonly
+
+如果你使用readonly方法，那么当通过关联性来获取的被关联的对象将会是read-only。
+
+#### 4.2.3.4 select
+
+select方法让你重写SQL SELECT语句，用来获取关于关联对象的数据。默认情况下，Rails获取所有的列。
+
+### 4.2.4 Do Any Associated Objects Exist?
+
+你可以看到如果任何关联对象是否存在，可以通过使用association.nil?方法：
+
+{% highlight ruby %}
+if @supplier.account.nil?
+  @msg = "No account found for this supplier"
+end
+{% endhighlight %}
+
+### 4.2.5 对象何时被保存？
+
+当你给一个has_one关联赋值一个对象时，对象是自动地被保存（为了更新它的外键）。另外，被替代的任何对象同样也会被自动地保存，因为它的外键也会被改变。
+
+如果这些保存因为校验出错而失败了，那么赋值语句返回的是false，赋值本身会被取消。
+
+如果父类对象（声明has_one的关联）不能被保存（就是new_record? 返回的是true），那么子对象不会被保存。当父类被保存时，他们也会被自动化地保存。
+
+如果你想要给一个has_one关联性赋值一个对象，没有保存对象，通过使用association.build方法。
+
+## 4.3 has_many关联性
+
+has_many关联创建了与另一个model的一个one-to-many关系。在数据库方面，
