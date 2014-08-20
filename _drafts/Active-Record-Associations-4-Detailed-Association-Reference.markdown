@@ -597,4 +597,118 @@ end
 
 ## 4.3 has_many关联性
 
-has_many关联创建了与另一个model的一个one-to-many关系。在数据库方面，
+has_many关联创建了与另一个model的一个one-to-many关系。在数据库方面，这个关联性意味着其他的类将会拥有一个外键来映射这个类的实例。
+
+### has_many的方法
+
+当你声明一个has_many的关联时，声明类自动地获得其相关联的16个方法：
+
+* collection(force_reload = false)
+* collection<<(object, ...)
+* collection.delete(object, ...)
+* collection.destroy(object, ...)
+* collection=objects
+* collection_singular_ids
+* collection_singular_ids=ids
+* collection.clear
+* collection.empty?
+* collection.size
+* collection.find(...)
+* collection.where(...)
+* collection.exists?(...)
+* collection.build(attributes = {}, ...)
+* collection.create(attributes = {})
+* collection.create!(attributes = {})
+
+在所有的这些方法里，collection是被symbol所替代的，作为has_many的第一个参数，collection_singular是被symbol的单数版本所替代。例如，给予这样的声明：
+
+{% highlight ruby %}
+class Customer < ActiveRecord::Base
+  has_many :orders
+end
+{% endhighlight %}
+
+每一个customer model的实例都会有这些方法：
+
+{% highlight ruby %}
+orders(force_reload = false)
+orders<<(object, ...)
+orders.delete(object, ...)
+orders.destroy(object, ...)
+orders=objects
+order_ids
+order_ids=ids
+orders.clear
+orders.empty?
+orders.size
+orders.find(...)
+orders.where(...)
+orders.exists?(...)
+orders.build(attributes = {}, ...)
+orders.create(attributes = {})
+orders.create!(attributes = {})
+{% endhighlight %}
+
+#### 4.3.1.1 collection(force_reload = false)
+
+collection方法返回是一个关于所关联对象的数组。如果没有所关联的对象，它将返回一个空的数组。
+
+{% highlight ruby %}
+@orders = @customer.orders
+{% endhighlight %}
+
+#### 4.3.1.2 collection<<(object, ...)
+
+collection<<方法增加一个或者多个对象到这个collection里，通过设置他们的外键关联到所调用model的主键上。
+
+{% highlight ruby %}
+@customer.orders << @order1
+{% endhighlight %}
+
+#### 4.3.1.3 collection.delete(object, ...)
+
+collection.delete方法从这个collection里移除一个或者多个方法，通过设置他们的外键为NULL。
+
+{% highlight ruby %}
+@customer.orders.delete(@order1)
+{% endhighlight %}
+
+>warning
+>
+>另外，如果那些对象的关联是dependent: :destroy，那么他们将会被销毁，如果他们的关联是dependent: :delete_all，那么他么将会被删除。
+
+#### 4.3.1.4 collection.destroy(object, ...)
+
+collection.destroy方法从collection里移除一个或者多个对象，通过执行每一个对象的销毁。
+
+{% highlight ruby %}
+@customer.orders.destroy(@order1)
+{% endhighlight %}
+
+>warning
+>
+>对象将总是从数据库里被移除，那么应忽视:dependent选项。
+
+#### 4.3.1.5 collection=objects
+
+collection=方法使得collection只包含所提供的对象，用来新增和删除。
+
+#### 4.3.1.6 collection_singular_ids
+
+collection_singular_ids方法返回的是在collection里的一个对象ids的数组。
+
+{% highlight ruby %}
+@order_ids = @customer.order_ids
+{% endhighlight %}
+
+#### 4.3.1.7 collection_singular_ids=ids
+
+collection_singular_ids=方法使得collection只包含所指定的对象，是通过所提供的主键值，用来新增和删除。
+
+#### 4.3.1.8 collection.clear
+
+collection.clear方法移除collection里每一个对象。如果他们的关联里有dependent: :destroy，那么这会销毁已关联的对象，如果是dependent: :delete_all，那么直接从数据库里删除他们，另外的就把它们的外键设置为NULL。
+
+#### 4.3.1.9 collection.empty?
+
+
