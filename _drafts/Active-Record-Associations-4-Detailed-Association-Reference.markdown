@@ -254,7 +254,7 @@ end
 
 #### 4.1.3.1 where
 
-where方法让你指定条件，其关联对象是必须满足的。
+where方法让你指定条件，所取得的关联对象必须要满足的条件。
 
 {% highlight ruby %}
 class Order < ActiveRecord::Base
@@ -494,7 +494,7 @@ end
 
 #### 4.2.2.9 :source_type
 
-:source_type选项指的是source关联类型一个has_one :through关联，用来处理一个多态的关联。
+:source_type选项指的是source关联类型用来一个has_one :through关联，用来处理一个多态的关联。
 
 #### 4.2.2.10 :through
 
@@ -523,7 +523,7 @@ end
 
 #### 4.2.3.1 where
 
-where方法让你指定条件，来满足关联的对象。
+where方法让你指定条件，所取得的关联对象必须要满足的条件。
 
 {% highlight ruby %}
 class Supplier < ActiveRecord::Base
@@ -851,8 +851,89 @@ end
 
 #### 4.3.2.7 :primary_key
 
+按照约定，Rails假设一个列被用来作为model的主键是id。你可以重写它，显示地声明主键，用:primary_key选项。
 
+让我们以users数据表为例，它有一个id主键，但它也有guid数据列。需求就是todos数据表应该有guid数据列而不是id的值。可以这样子实现：
 
+{% highlight ruby %}
+class User < ActiveRecord::Base
+  has_many :todos, primary_key: :guid
+end
+{% endhighlight %}
+
+现在如果我们执行@user.todos.create，那么@todo数据记录会有user_id的值来作为@user的guid的值。
+
+#### 4.3.2.8 :source
+
+:source选项指定的是source关联名通过一个has_many :through关联。
+
+如果source关联名字不能够从关联名字里被自动推导出来，你只需要使用这个选项。
+
+#### 4.3.2.9 :source_type
+
+:source_type选项指的是source关联类型用来一个has_many :through关联，用来处理一个多态的关联。
+
+#### 4.3.2.10 :through
+
+:through选项指的是一个join model通过哪个model来执行查询。has_many :through关联提供了一个方式实现many-to-many关系，细节已经在前面讲过[earlier in this guide](http://guides.rubyonrails.org/association_basics.html#the-has-many-through-association)。
+
+#### 4.3.2.11 :validate
+
+如果你设置:validate选项值为false，那么被关联的对象无论你何时保存它都将不会被验证。默认的情况下，这个选项的值是true，当这个对象被保存的时候将会被校验。
+
+### 4.3.3 has_many范围
+
+当你想要用has_many定制化查询时，可能需要一些时间。类似于这样的定制化能够通过一个代码块来获取。例如：
+
+{% highlight ruby %}
+class Customer < ActiveRecord::Base
+  has_many :orders, -> { where processed: true }
+end
+{% endhighlight %}
+
+你可以在代码块内使用一些的标准的查询方法[querying methods](http://guides.rubyonrails.org/active_record_querying.html)，将在下面的内容里讨论这些：
+
+* where
+* extending
+* group
+* includes
+* limit
+* offset
+* order
+* readonly
+* select
+* uniq
+
+#### 4.3.3.1 where
+
+where方法让你指定条件，所取得的关联对象必须要满足的条件。
+
+{% highlight ruby %}
+class Customer < ActiveRecord::Base
+  has_many :confirmed_orders, -> { where "confirmed = 1" },
+    class_name: "Order"
+end
+{% endhighlight %}
+
+你也可以通过一个hash来设置多个条件：
+
+{% highlight ruby %}
+class Customer < ActiveRecord::Base
+  has_many :confirmed_orders, -> { where confirmed: true },
+                              class_name: "Order"
+end
+{% endhighlight %}
+
+如果你使用一个hash-style的where选项，那么通过这个关联性创建的数据记录行将会自动地来使用hash。在这个例子里，使用@customer.confirmed_orders.create或者@customer.confirmed_orders.build将会创建orders是那些已被确认为true的数据。
+
+#### 4.3.3.2 extending
+
+extending方法是
 
 ## 4.4 has_and_belongs_to_many关联性
+
+## 4.5 关联性回调函数
+
+## 4.6 关联性扩展
+
 
