@@ -176,7 +176,7 @@ end
 
 #### 4.1.2.5 :foreign_key
 
-基于约定，Rails假设在这个model里该列用来作为外键，关联性的命名是加上后缀_id。:foreign_key选项是让你直接设置外键名称：
+基于约定，Rails假设在其他model里用来作为外键的数据列是这个model名字加上后缀_id。:foreign_key选项是让你直接设置外键名称：
 
 {% highlight ruby %}
 class Order < ActiveRecord::Base
@@ -458,7 +458,7 @@ end
 
 #### 4.2.2.5 :foreign_key
 
-按照约定，Rails假设有一个列被用来作为外键关联到其他的model，这个列名是会增加后缀_id。:foreign_key选项让你能直接设置外键名称：
+基于约定，Rails假设在其他model里用来作为外键的数据列是这个model名字加上后缀_id。:foreign_key选项是让你直接设置外键名称：
 
 {% highlight ruby %}
 class Supplier < ActiveRecord::Base
@@ -472,7 +472,7 @@ end
 
 #### 4.2.2.6 :inverse_of
 
-:inverse_of选项指定的是belongs_to关联的名字，它是这个关联的反响。不要结合:through或者:as选项一起使用。
+:inverse_of选项指定的是belongs_to关联的名字，它是这个关联的反向。不要结合:through或者:as选项一起使用。
 
 {% highlight ruby %}
 class Supplier < ActiveRecord::Base
@@ -711,4 +711,148 @@ collection.clear方法移除collection里每一个对象。如果他们的关联
 
 #### 4.3.1.9 collection.empty?
 
+如果collection没有包含任何关联对象，collection.empty?方法返回的是true。
+
+{% highlight ruby %}
+<% if @customer.orders.empty? %>
+  No Orders Found
+<% end %>
+{% endhighlight %}
+
+#### 4.3.1.10 collection.size
+
+collection.size方法返回的是在collection里对象的数量。
+
+{% highlight ruby %}
+@order_count = @customer.orders.size
+{% endhighlight %}
+
+#### 4.3.1.11 collection.find(...)
+
+collection.find方法是在collection里查找objects。它用的是和ActiveRecord::Base.find相同的语法和选项。
+
+{% highlight ruby %}
+@open_orders = @customer.orders.find(1)
+{% endhighlight %}
+
+#### 4.3.1.12 collection.where(...)
+
+collection.where方法是基于所提供的查询条件在collection里查找objects，但这些objects是延时导入，意味着数据库被查询只是在object(s)能被读取时.
+
+{% highlight ruby %}
+@open_orders = @customer.orders.where(open: true) # No query yet
+@open_order = @open_orders.first # Now the database will be queried
+{% endhighlight %}
+
+#### 4.3.1.13 collection.exists?(...)
+
+collection.exist?方法检查一个object是否符合在collection里所提供的查询条件。它使用的是和ActiveRecord::Base.exist?相同的语法和选项。
+
+#### 4.3.1.14 collection.build(attributes = {}, ...)
+
+collection.build返回的是一个或者多个新的关联类型objects。这些objects将会从传入的属性里被实例化，然后通过他们的外键的关联将会被创建，但已关联的对象*将不会被保存*。
+
+{% highlight ruby %}
+@order = @customer.orders.build(order_date: Time.now,
+                                order_number: "A12345")
+{% endhighlight %}
+
+#### 4.3.1.15 collection.create(attributes = {})
+
+collection.create方法返回的一个新的关联类型object。这些objects将会从传入的属性里被实例化，然后通过他们的外键的关联将会被创建，一旦它通过针对已关联model所有的校验，那么已关联object*将会被保存*。
+
+#### 4.3.1.16 collection.create!(attributes = {})
+
+类似于上面的collection.create，但如果数据记录无效时，会抛出ActiveRecord::RecordInvalid。
+
+### 4.3.2 has_many选项
+
+当Rails使用智能化的默认值，就能完成大部分的情况，当你想要定制化关于has_many关联的行为时，可能需要一些时间。类似于这样的定制化当你创建该关联性时，可以很简单地通过设定选项值来完成。例如，这个关联性使用了两个这样的选项：
+
+{% highlight ruby %}
+class Customer < ActiveRecord::Base
+  has_many :orders, dependent: :delete_all, validate: :false
+end
+{% endhighlight %}
+
+has_many关联支持这些选项：
+
+* :as
+* :autosave
+* :class_name
+* :dependent
+* :foreign_key
+* :inverse_of
+* :primary_key
+* :source
+* :source_type
+* :through
+* :validate
+
+#### 4.3.2.1 :as
+
+设置:as选项指的是，这是一个多态关联，详细细节在[earlier in this guide](http://guides.rubyonrails.org/association_basics.html#polymorphic-associations)。
+
+#### 4.3.2.2 :autosave
+
+如果你设置:autosave选项值为true，无论何时当你想保存父类object时，Rails将会保存任何载入的成员和销毁那些被标记为可毁灭的成员。
+
+#### 4.3.2.3 :class_name
+
+如果其他model的名字不能够从关联名字哪里推导出来，你可以使用:class_name选项来指定model名字。例如，如果一个customer有多个orders，但是包含orders的model实际名字是Transaction，你将会用这个来设置：
+
+{% highlight ruby %}
+class Customer < ActiveRecord::Base
+  has_many :orders, class_name: "Transaction"
+end
+{% endhighlight %}
+
+#### 4.3.2.4 :dependent
+
+当关联对象的拥有者被销毁时，可以控制它的执行情况：
+
+* :destroy引起已关联对象被销毁
+* :delete引起已关联对象被直接从数据库里删除（因此回调函数将不会执行）
+* :nullify引起外键被设置为NULL。回调函数不会被执行。
+* :restrict_with_exception如果有一个已关联的记录的话，会引起一个异常被抛出
+* :restrict_with_error如果有一个已关联对象，会引起一个错误被增加到owner
+
+>note:
+>
+>当你使用:through选项时，这个选项会被忽视。
+
+#### 4.3.2.5 :foreign_key
+
+基于约定，Rails假设在其他model里用来作为外键的数据列是这个model名字加上后缀_id。:foreign_key选项是让你直接设置外键名称：
+
+{% highlight ruby %}
+class Customer < ActiveRecord::Base
+  has_many :orders, foreign_key: "cust_id"
+end
+{% endhighlight %}
+
+>information
+>
+>在任何情况下，Rails不会为你创建外键的列。你需要在你的数据迁移文件（migration）里明确定义他们。
+
+#### 4.3.2.6 :inverse_of
+
+:inverse_of选项指定的是belongs_to关联的名字，它是这个关联的反向。不要结合:through或者:as选项一起使用。
+
+{% highlight ruby %}
+class Customer < ActiveRecord::Base
+  has_many :orders, inverse_of: :customer
+end
+ 
+class Order < ActiveRecord::Base
+  belongs_to :customer, inverse_of: :orders
+end
+{% endhighlight %}
+
+#### 4.3.2.7 :primary_key
+
+
+
+
+## 4.4 has_and_belongs_to_many关联性
 
