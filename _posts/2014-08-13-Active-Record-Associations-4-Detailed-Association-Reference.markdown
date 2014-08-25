@@ -1460,7 +1460,62 @@ class Customer < ActiveRecord::Base
 end
 {% endhighlight %}
 
+Rails带入的对象，是对于回调函数里用来新增和移除的。
+
+你可以基于一个单独的事件上执行多个回调函数，通过带入他们作为一个数组：
+
+{% highlight ruby %}
+class Customer < ActiveRecord::Base
+  has_many :orders,
+    before_add: [:check_credit_limit, :calculate_shipping_charges]
+ 
+  def check_credit_limit(order)
+    ...
+  end
+ 
+  def calculate_shipping_charges(order)
+    ...
+  end
+end
+{% endhighlight %}
+
+如果一个before_add回调函数抛出一个异常，那么这个对象不会被增加到collection里。类似的，如果一个before_remove回调函数抛出一个异常，那么这个对象不会从collection里被删除。
 
 ## 4.6 关联性扩展
 
+在功能上你不会受到限制，Rails自动地建立关联性的代理对象。你能够继承通过匿名模块来继承这些对象，添加新的finder，creators，或者其他的方法。例如：
+
+{% highlight ruby %}
+class Customer < ActiveRecord::Base
+  has_many :orders do
+    def find_by_order_prefix(order_number)
+      find_by(region_id: order_number[0..2])
+    end
+  end
+end
+{% endhighlight %}
+
+如果你有一个扩展，应该被许多关联性来分享，你能够使用一个命名的扩展模块。例如：
+
+{% highlight ruby %}
+module FindRecentExtension
+  def find_recent
+    where("created_at > ?", 5.days.ago)
+  end
+end
+ 
+class Customer < ActiveRecord::Base
+  has_many :orders, -> { extending FindRecentExtension }
+end
+ 
+class Supplier < ActiveRecord::Base
+  has_many :deliveries, -> { extending FindRecentExtension }
+end
+{% endhighlight %}
+
+扩展能够引用关联代理的内部关系，使用proxy_association访问器的这三个属性：
+
+* proxy_association.owner 返回的对象时其关联性的一部分。
+* proxy_association.reflection 返回的映射对象，其描述了该关联性。
+* proxy_association.target 返回的是关于belongs_to或者has_one的关联对象，或者返回的是关于has_many或者has_and_belongs_to_many关联对象的collection。
 
