@@ -1,9 +1,9 @@
 ---
 layout: post
-title:  "Active Record Associations 8 条件回调函数"
-date:   2014-08-04 23:05:55
+title:  "Active Record Query Interface 1 从数据库获取对象"
+date:   2014-08-26 17:05:55
 categories: Rails
-tags: Rails Active Record Associations
+tags: Rails Active Record Query Interface
 ---
 
 ![P1000759](/assets/2014/08/12/P1000759.gif)
