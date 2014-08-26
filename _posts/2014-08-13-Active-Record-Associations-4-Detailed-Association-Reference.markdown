@@ -1459,7 +1459,7 @@ class Customer < ActiveRecord::Base
   end
 end
 {% endhighlight %}
-
+ 
 Rails带入的对象，是对于回调函数里用来新增和移除的。
 
 你可以基于一个单独的事件上执行多个回调函数，通过带入他们作为一个数组：
@@ -1480,7 +1480,7 @@ end
 {% endhighlight %}
 
 如果一个before_add回调函数抛出一个异常，那么这个对象不会被增加到collection里。类似的，如果一个before_remove回调函数抛出一个异常，那么这个对象不会从collection里被删除。
-
+ 
 ## 4.6 关联性扩展
 
 在功能上你不会受到限制，Rails自动地建立关联性的代理对象。你能够继承通过匿名模块来继承这些对象，添加新的finder，creators，或者其他的方法。例如：
