@@ -101,5 +101,19 @@ client = Client.find(10)
 SELECT * FROM clients WHERE (clients.id = 10) LIMIT 1
 {% endhighlight %}
 
+Model.find(primary_key)如果没匹配记录没有找到的话，将会抛出一个ActiveRecord::RecordNotFound异常。
 
+### 1.1.2 take
 
+Model.take获得一条记录，不带有任何隐藏的排序。例如：
+
+{% highlight ruby %}
+client = Client.take
+# => #<Client id: 1, first_name: "Lifo">
+{% endhighlight %}
+
+上述代码所等价的SQL是：
+
+{% highlight sql %}
+SELECT * FROM clients LIMIT 1
+{% endhighlight %}
