@@ -117,3 +117,86 @@ client = Client.take
 {% highlight sql %}
 SELECT * FROM clients LIMIT 1
 {% endhighlight %}
+
+如果没有数据记录被发现，那么Model.take返回nil，也没有异常被抛出。
+
+>information:
+>
+>所获取的数据记录可能非常依赖数据库引擎。
+
+### 1.1.3 first
+
+Model.first按照主键的顺序查找第一条数据记录。例如：
+
+{% highlight ruby %}
+client = Client.first
+# => #<Client id: 1, first_name: "Lifo">
+{% endhighlight %}
+
+上述代码所等价的SQL是：
+
+{% highlight sql %}
+SELECT * FROM clients ORDER BY clients.id ASC LIMIT 1
+{% endhighlight %}
+
+如果没有匹配的数据记录被发现，那么Model.first返回nil，也没有异常被抛出。
+
+### 1.1.4 last
+
+Model.last按照主键的顺序，查找最后一条数据记录。例如：
+
+{% highlight ruby %}
+client = Client.last
+# => #<Client id: 221, first_name: "Russel">
+{% endhighlight %}
+
+上述代码所等价的SQL是：
+
+{% highlight sql %}
+SELECT * FROM clients ORDER BY clients.id DESC LIMIT 1
+{% endhighlight %}
+
+如果没有匹配的数据记录被发现，那么Model.last返回nil，也没有异常被抛出。
+
+### 1.1.5 find_by
+
+Model.find_by基于一些条件来查找第一条数据记录。例如：
+
+{% highlight ruby %}
+Client.find_by first_name: 'Lifo'
+# => #<Client id: 1, first_name: "Lifo">
+ 
+Client.find_by first_name: 'Jon'
+# => nil
+{% endhighlight %}
+
+等价于这样来写：
+
+{% highlight ruby %}
+Client.where(first_name: 'Lifo').take
+{% endhighlight %}
+
+### 1.1.6 take!
+
+Model.take!获得一条数据记录，而没有隐含的排序。例如：
+
+{% highlight ruby %}
+client = Client.take!
+# => #<Client id: 1, first_name: "Lifo">
+{% endhighlight %}
+
+上述代码所等价的SQL是：
+
+{% highlight sql %}
+SELECT * FROM clients LIMIT 1
+{% endhighlight %}
+
+如果没有没有匹配的数据记录被查找到的话，Model.take!会抛出异常ActiveRecord::RecordNotFound。
+
+### 1.1.7 first!
+
+
+
+
+
+
