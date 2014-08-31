@@ -195,8 +195,37 @@ SELECT * FROM clients LIMIT 1
 
 ### 1.1.7 first!
 
+Model.first!依据主键顺序查找到第一条数据记录。例如：
 
+{% highlight ruby %}
+client = Client.first!
+# => #<Client id: 1, first_name: "Lifo">
+{% endhighlight %}
 
+上述代码所等价的SQL是：
 
+{% highlight sql %}
+SELECT * FROM clients ORDER BY clients.id ASC LIMIT 1
+{% endhighlight %}
 
+如果没有没有匹配的数据记录被查找到的话，Model.first!会抛出异常ActiveRecord::RecordNotFound。
+
+### 1.1.8 last!
+
+Model.last!依据主键顺序查找到最后一条数据记录。例如：
+
+{% highlight ruby %}
+client = Client.last!
+# => #<Client id: 221, first_name: "Russel">
+{% endhighlight %}
+
+上述代码所等价的SQL是：
+
+{% highlight sql %}
+SELECT * FROM clients ORDER BY clients.id DESC LIMIT 1
+{% endhighlight %}
+
+如果没有没有匹配的数据记录被查找到的话，Model.last!会抛出异常ActiveRecord::RecordNotFound。
+
+### 1.1.9 find_by!
 
