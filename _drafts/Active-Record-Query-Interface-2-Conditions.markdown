@@ -56,6 +56,8 @@ Client.where("orders_count = #{params[:orders]}")
 
 ### 2.2.1 Placeholder Conditions 占位符查询条件
 
+类似于（？）替代型参数，
+
 
 
 
