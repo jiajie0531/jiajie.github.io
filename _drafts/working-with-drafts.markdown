@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "Active Record Query Interface 1 从数据库获取对象"
+title:  "Active Record Query Interface 3 排序"
 date:   2014-08-26 17:05:55
 categories: Rails
 tags: Rails Active Record Query Interface
