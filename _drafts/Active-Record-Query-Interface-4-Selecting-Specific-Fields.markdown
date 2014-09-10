@@ -23,3 +23,11 @@ Client.select("viewable_by, locked")
 {% highlight sql %}
 SELECT viewable_by, locked FROM clients
 {% endhighlight %}
+
+要注意，因为这也就意味着你只要选择几个字段就能初始化一个model对象。如果你想要读取一个字段，该字段不会存在于你将会获取到的被初始化的数据记录里。
+
+{% highlight ruby %}
+ActiveModel::MissingAttributeError: missing attribute: <attribute>
+{% endhighlight %}
+
+对于\<attribute>是你所要求的属性。id方法将不会抛出ActiveRecord::MissingAttributeError，
