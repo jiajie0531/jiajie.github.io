@@ -1,0 +1,28 @@
+---
+layout: post
+title:  "table view"
+date:   2015-05-28 13:05:55
+categories: ios
+tags: ios swift tableView
+---
+
+## Index paths
+
+你已经看到table view为了一个cell去获取**data source**，使用的方法是tableView(cellForRowAtIndexPath)。
+
+因此这个index-path到底是什么呢？
+
+NSIndexPath简而言之就是一个object，表示的是一个table中的一行。它是一个行和分组的结合。当一个table view为了一个cell而需要data source，在indexPath.row属性里，你能够找到所属的哪一行，想要的哪个cell。
+
+它也能够把table的那些行都进行分组。在地址簿的app里，你可能想要把联系人按照姓做一下排序。所有姓以“A”开头的联系人都被单独排在一块儿，所有姓以“B”开头的联系人被放在另外一块儿，等等。
+
+为了寻找哪一行属于哪个分组，你得在indexPath.section的属性里来操作。清单app还没有分组的需求，因此你可以在NSIndexPath里忽视`section`属性。
+
+也就是说，"NS"前缀，NSIndexPath意味着这个object是由Foundation framework所提供的。NS是NextStep，一个1990's后期的操作系统，也就是后来的Mac OS X，同样也是iOS的源头。
+ 
+## the delegation pattern 
+#### 委托模式
+
+委托的概念在iOS里非常普通的。一个object会经常性地依赖另一个object来帮助它来处理某些任务。松耦合*separation of concerns*
+
+
